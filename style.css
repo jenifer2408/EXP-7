@@ -1,0 +1,102 @@
+body{
+    background:#eaf6ff;
+    color:#003366;
+    font-family:Arial,sans-serif;
+    margin:20px;
+}
+
+h1,h2{ color:darkred; }
+header{ text-align:center; }
+.hero-image{ width:100%; margin:20px 0; overflow:hidden; }
+.hero-image img{ width:100%; height:auto; display:block; }
+.container{ width:85%; margin:auto; text-align:center; }
+#aboutSection p{ line-height:1.7; color:#345; max-width:800px; margin:12px auto; }
+.box{ background:white; padding:20px; margin:20px 0; border-radius:10px; box-shadow:0 0 8px gray; }
+#comfortButton{ position:absolute; top:15px; right:20px; width:36px; height:36px; padding:0; margin:0; background:#1976d2; color:white; border:0; border-radius:50%; cursor:pointer; font-size:18px; }
+#departmentSelection{ display:none; }
+#departmentSelection .dept{ display:flex; justify-content:center; flex-wrap:wrap; gap:10px; }
+#departmentSelection .dept button{ min-width:170px; }
+.dept button,.doctor button,#appointmentForm button{ padding:10px 20px; margin:8px; background:#1976d2; color:white; border:0; cursor:pointer; border-radius:5px; }
+.service-container{ display:flex; justify-content:center; flex-wrap:wrap; gap:20px; }
+.service-card{ width:220px; padding:18px; background:#f4faff; border:1px solid #b5d9f5; border-radius:10px; text-align:center; }
+.service-card h3{ color:#0056b3; margin-top:5px; }
+.service-card p{ color:#345; line-height:1.6; font-size:14px; }
+.booking-steps{ display:flex; justify-content:center; gap:25px; flex-wrap:wrap; margin-top:20px; }
+.booking-step{ width:230px; padding:20px; background:#f4faff; border:1px solid #b5d9f5; border-radius:10px; text-align:center; }
+.step-number{ width:40px; height:40px; line-height:40px; margin:0 auto 10px; background:#1976d2; color:white; border-radius:50%; font-weight:bold; font-size:18px; }
+.booking-step h3{ color:#0056b3; }
+.booking-step p{ color:#345; line-height:1.6; font-size:14px; }
+.calendar-box{ width:100%; max-width:430px; margin:10px auto 8px; background:#f8fbff; border:1px solid #c8def3; border-radius:10px; padding:12px; }
+.calendar-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.calendar-header span{ font-weight:bold; color:#0056b3; font-size:17px; }
+.calendar-header button{ width:36px; height:34px; margin:0 !important; padding:0 !important; font-size:22px; line-height:1; }
+.calendar-weekdays,.calendar-days{ display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+.calendar-weekdays span{ font-size:12px; font-weight:bold; color:#55708a; text-align:center; padding:5px 0; }
+.calendar-day{ height:38px; margin:0 !important; padding:0 !important; border:1px solid #d5e4f0 !important; background:white !important; color:#003366 !important; border-radius:6px !important; font-size:13px; }
+.calendar-day.available:hover{ background:#e1f0ff !important; border-color:#1976d2 !important; }
+.calendar-day.selected{ background:#1976d2 !important; color:white !important; border-color:#1976d2 !important; font-weight:bold; }
+.calendar-day.disabled{ background:#edf1f4 !important; color:#a5adb5 !important; cursor:not-allowed !important; border-color:#e1e5e8 !important; }
+.calendar-day.empty{ visibility:hidden; }
+.selected-info{ margin:7px 0 15px; color:#0056b3; font-size:14px; font-weight:bold; }
+.time-slots{ max-width:430px; margin:8px auto 10px; display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.time-slot{ margin:0 !important; padding:10px !important; background:white !important; color:#0056b3 !important; border:1px solid #9cc8ec !important; border-radius:6px !important; font-weight:bold; }
+.time-slot:hover{ background:#e1f0ff !important; }
+.time-slot.selected{ background:#1976d2 !important; color:white !important; border-color:#1976d2 !important; }
+.slot-placeholder{ grid-column:1/-1; color:#6b7d8e; font-size:13px; margin:4px; }
+.doctor{ display:inline-block; width:250px; margin:10px; padding:15px; background:#f4faff; border:1px solid #b5d9f5; border-radius:10px; vertical-align:top; }
+#departmentPage,#appointmentForm{ display:none; }
+input,select,textarea{ padding:9px; margin:7px; }
+footer{ background:#0d47a1; color:white; text-align:center; padding:15px; margin-top:30px; }
+
+/* Animated Healthcare Motto */
+#mottoContainer{ width:100%; overflow:hidden; background:#dcefff; padding:10px 0; margin:15px 0; }
+#motto{ white-space:nowrap; position:relative; font-weight:bold; color:darkred; }
+.consultation-container{ display:flex; justify-content:center; gap:20px; flex-wrap:wrap; }
+.consultation-card{ width:230px; padding:20px; background:#f4faff; border:1px solid #b5d9f5; border-radius:10px; text-align:center; }
+.consultation-card h3{ color:#0056b3; }
+.consultation-card p{ color:#345; line-height:1.6; font-size:14px; }
+.consultation-card button{ padding:10px 15px; background:#1976d2; color:white; border:0; border-radius:5px; cursor:pointer; }
+.consultation-card button:hover{ background:#0d47a1; }
+
+/* Comfort Mode */
+.comfortMode{ background:#003366; color:white; }
+.comfortMode .box{ background:#174a73; color:white; }
+.comfortMode .doctor{ color:#003366; }
+.comfortMode h1,.comfortMode h2{ color:#ffd54f; }
+.comfortMode #aboutSection p{ color:white; }
+.comfortMode .service-card{ background:#174a73; color:white; }
+.comfortMode .service-card h3,.comfortMode .service-card p{ color:white; }
+.comfortMode .booking-step{ background:#174a73; color:white; }
+.comfortMode .booking-step h3,.comfortMode .booking-step p{ color:white; }
+.map-box{ max-width:800px; margin:20px auto 0; border-radius:10px; overflow:hidden; border:1px solid #b5d9f5; }
+.map-box iframe{ display:block; }
+#queueResult{ display:none; }
+.queue-info{ max-width:400px; margin:20px auto; padding:20px; background:#f4faff; border:1px solid #b5d9f5; border-radius:10px; }
+.queue-info h3{ color:#0056b3; }
+.queue-number{ font-size:42px; font-weight:bold; color:#1976d2; margin:10px; }
+.queue-info p{ color:#345; }
+.appointment-actions{ margin-top:20px; }
+.appointment-actions button{ padding:10px 18px; margin:5px; border:0; border-radius:5px; cursor:pointer; background:#1976d2; color:white; }
+.navbar{ background:#0d47a1; padding:12px; text-align:center; border-radius:8px; margin:15px auto; }
+.navbar a{ color:white; text-decoration:none; margin:0 18px; font-weight:bold; }
+.navbar a:hover{ text-decoration:underline; }
+.about-split{ display:flex; gap:50px; align-items:center; text-align:left; }
+.about-left{ flex:1.2; padding-right:30px; border-right:2px solid #b5d9f5; }
+.about-left h2{ color:darkred; margin-top:0; }
+.about-left p{ line-height:1.7; }
+.about-right{ flex:0.8; display:flex; flex-direction:column; gap:20px; }
+.about-point{ display:flex; align-items:flex-start; gap:15px; }
+.about-point > span{ font-size:28px; min-width:35px; }
+.about-point h3{ margin:0 0 5px; color:darkred; }
+.about-point p{ margin:0; line-height:1.5; }
+
+/* jQuery doctor search */
+#doctorSearch{ width:min(90%,360px); box-sizing:border-box; border:1px solid #b5d9f5; border-radius:6px; }
+
+@media(max-width:700px){
+    .container{ width:100%; }
+    .about-split{ flex-direction:column; gap:25px; }
+    .about-left{ padding-right:0; padding-bottom:25px; border-right:none; border-bottom:2px solid #b5d9f5; }
+    .navbar a{ display:inline-block; margin:6px 8px; }
+    .calendar-weekdays,.calendar-days{ gap:3px; }
+}

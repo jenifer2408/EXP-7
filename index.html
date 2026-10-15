@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CarePulse</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <style>
+        /* Department image */
+        .department-image-box{
+            width:100%;
+            margin-bottom:20px;
+            overflow:hidden;
+            border-radius:12px;
+        }
+
+        .department-image{
+            width:100%;
+            height:260px;
+            object-fit:cover;
+            border-radius:12px;
+            display:block;
+            animation:fadeImage 1s ease;
+        }
+
+        @keyframes fadeImage{
+            from{opacity:0;}
+            to{opacity:1;}
+        }
+
+        /* Doctors */
+        #doctors{
+            display:flex;
+            justify-content:center;
+            flex-wrap:wrap;
+            gap:22px;
+            margin-top:20px;
+        }
+
+        .doctor{
+            width:250px;
+            padding:20px;
+            background:#f4faff;
+            border:1px solid #b5d9f5;
+            border-radius:12px;
+            text-align:center;
+            box-shadow:0 4px 10px rgba(0,0,0,.08);
+        }
+
+        .doctor:hover{
+            transform:translateY(-5px);
+        }
+
+        .doctor button{
+            padding:10px 16px;
+            background:#1976d2;
+            color:white;
+            border:0;
+            border-radius:6px;
+            cursor:pointer;
+        }
+
+        #departmentSelection,
+        #departmentDetails,
+        #appointmentForm,
+        #queueResult{
+            display:none;
+        }
+
+        /* Moving motto */
+        #mottoContainer{
+            overflow:hidden;
+            position:relative;
+            height:35px;
+        }
+
+        #motto{
+            position:relative;
+            white-space:nowrap;
+        }
+
+        .comfortMode{
+            background:#222;
+            color:white;
+        }
+
+        .comfortMode .box,
+        .comfortMode .doctor{
+            background:#174a73;
+            color:white;
+        }
+        /* MAIN PROJECT CALENDAR */
+
+.calendar-box{
+    width:100%;
+    max-width:430px;
+    margin:10px auto 8px;
+    background:#f8fbff;
+    border:1px solid #c8def3;
+    border-radius:10px;
+    padding:12px;
+    box-sizing:border-box;
+}
+
+.calendar-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
+.calendar-header span{
+    font-weight:bold;
+    color:#0056b3;
+    font-size:17px;
+}
+
+.calendar-header button{
+    width:36px !important;
+    height:34px !important;
+    margin:0 !important;
+    padding:0 !important;
+    font-size:22px;
+    line-height:1;
+}
+
+.calendar-weekdays,
+.calendar-days{
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+    gap:5px !important;
+    box-sizing:border-box !important;
+}
+
+.calendar-weekdays span{
+    font-size:12px;
+    font-weight:bold;
+    color:#55708a;
+    text-align:center;
+    padding:5px 0;
+}
+
+.calendar-day{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    height:38px !important;
+    margin:0 !important;
+    padding:0 !important;
+    box-sizing:border-box !important;
+    border:1px solid #d5e4f0 !important;
+    background:white !important;
+    color:#003366 !important;
+    border-radius:6px !important;
+    font-size:13px;
+}
+
+.calendar-day.available:hover{
+    background:#e1f0ff !important;
+    border-color:#1976d2 !important;
+}
+
+.calendar-day.selected{
+    background:#1976d2 !important;
+    color:white !important;
+    border-color:#1976d2 !important;
+    font-weight:bold;
+}
+
+.calendar-day.disabled{
+    background:#edf1f4 !important;
+    color:#a5adb5 !important;
+    cursor:not-allowed !important;
+    border-color:#e1e5e8 !important;
+}
+
+.calendar-day.empty{
+    visibility:hidden;
+}
+
+.selected-info{
+    margin:7px 0 15px;
+    color:#0056b3;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.time-slots{
+    max-width:430px;
+    margin:8px auto 10px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+}
+
+.time-slot{
+    margin:0 !important;
+    padding:10px !important;
+}
+    </style>
+</head>
+
+<body onload="welcome()">
+
+<header>
+
+    <h1 id="title">CarePulse</h1>
+
+    <p><b>Healthcare & Appointment Booking System</b></p>
+
+    <p>
+        Welcome to CarePulse. Find the right doctor,
+        explore departments, and book your appointment easily.
+    </p>
+
+    <nav class="navbar">
+        <a href="#aboutSection">About</a>
+        <a href="#servicesSection">Services</a>
+        <a href="#bookingGuide">How to Book</a>
+        <a href="#consultationSection">Consultation</a>
+        <a href="#locationSection">Location</a>
+    </nav>
+
+    <div id="hospitalImageBox">
+        <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d"
+             width="100%" height="300"
+             onmouseover="imageOver()"
+             onmouseout="imageOut()">
+
+        <p id="imageMsg">
+            Our hospital provides expert consultation and modern healthcare facilities.
+        </p>
+    </div>
+
+    <div id="mottoContainer">
+        <p id="motto">
+            Your Health, Our Priority — Caring for You Every Step of the Way.
+        </p>
+    </div>
+
+    <p id="todayDate"></p>
+
+    <button onclick="changeStyle()" title="Comfort Mode">☾</button>
+
+</header>
+<hr>
+
+<div class="container">
+
+<div class="box" id="aboutSection">
+
+    <h2>About Us</h2>
+
+    <p>
+        CarePulse is a healthcare and appointment booking system
+        designed to make accessing medical care simple and organized.
+    </p>
+
+    <p>
+        Patients can explore departments, view doctors,
+        select available dates and times, and book appointments.
+    </p>
+
+</div>
+
+
+<div class="box" id="servicesSection">
+
+    <h2>Our Services</h2>
+
+    <div class="service-container">
+
+        <div class="service-card">
+            <h3>Primary & General Consultation</h3>
+            <p>Routine medical examinations and preventive healthcare.</p>
+        </div>
+
+        <div class="service-card">
+            <h3>Specialized Medical Care</h3>
+            <p>Expert care in different medical departments.</p>
+        </div>
+
+        <div class="service-card">
+            <h3>Telehealth & Virtual Care</h3>
+            <p>Connect with doctors through online consultation.</p>
+        </div>
+
+        <div class="service-card">
+            <h3>Diagnostics & Imaging</h3>
+            <p>Access diagnostic and imaging services.</p>
+        </div>
+
+    </div>
+</div>
+
+<div class="box" id="bookingGuide">
+
+    <h2>How to Book an Appointment</h2>
+
+    <div class="booking-steps">
+
+        <div class="booking-step">
+            <div class="step-number">1</div>
+            <h3>Choose Consultation Mode</h3>
+            <p>Select In-Person, Telehealth or Home Visit.</p>
+        </div>
+
+        <div class="booking-step">
+            <div class="step-number">2</div>
+            <h3>Select Department & Doctor</h3>
+            <p>Choose your department and preferred doctor.</p>
+        </div>
+
+        <div class="booking-step">
+            <div class="step-number">3</div>
+            <h3>Enter Details & Confirm</h3>
+            <p>Enter details, date, time and confirm.</p>
+        </div>
+
+    </div>
+</div>
+
+<div id="homePage" class="box">
+
+    <h2 id="consultationSection">
+        Choose Your Preferred Mode of Consultation
+    </h2>
+
+    <p>
+        <b>Select how you would like to receive your healthcare.</b>
+    </p>
+
+    <div class="consultation-container">
+
+        <div class="consultation-card">
+            <h3>🏥 In-Person Appointment</h3>
+            <p>Visit our hospital and consult your preferred doctor in person.</p>
+            <button onclick="selectMode('In-Person')">
+                Choose In-Person
+            </button>
+        </div>
+
+        <div class="consultation-card">
+            <h3>💻 Telehealth</h3>
+            <p>Connect with your doctor remotely through an online consultation.</p>
+            <button onclick="selectMode('Telehealth')">
+                Choose Telehealth
+            </button>
+        </div>
+
+        <div class="consultation-card">
+            <h3>🏠 Home Visit</h3>
+            <p>Request a healthcare professional to provide consultation at your home.</p>
+            <button onclick="selectMode('Home Visit')">
+                Choose Home Visit
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<div id="departmentSelection" class="box">
+
+    <h2>Choose a Department</h2>
+
+    <p><b>Select the medical department you would like to consult.</b></p>
+
+    <div class="dept">
+
+        <button onclick="showDepartment('Cardiology')">❤️ Cardiology</button>
+        <button onclick="showDepartment('Dermatology')">🧴 Dermatology</button>
+        <button onclick="showDepartment('Orthopedics')">🦴 Orthopedics</button>
+        <button onclick="showDepartment('Pediatrics')">👶 Pediatrics</button>
+        <button onclick="showDepartment('General Medicine')">🩺 General Medicine</button>
+
+    </div>
+
+    <br>
+
+    <button onclick="backToModes()">Back</button>
+
+</div>
+
+<div id="departmentDetails">
+
+    <div class="box">
+
+        <div id="departmentImage"
+             class="department-image-box"></div>
+
+        <h2 id="deptName"></h2>
+
+        <p id="deptDetails"></p>
+
+    </div>
+
+    <div class="box">
+        <h2>Available Doctors</h2>
+        <p>Select a doctor to continue with your appointment.</p>
+        <input type="text" id="doctorSearch" placeholder="Search doctors by name or speciality" aria-label="Search doctors">
+        <div id="doctors"></div>
+        <br>
+        <button onclick="backToDepartments()">Back to Departments</button>
+    </div>
+</div>
+
+<div class="box" id="locationSection">
+
+    <h2>CarePulse Hospital Location</h2>
+
+    <p>📍 Chennai, Tamil Nadu</p>
+
+    <p>
+        Visit our hospital for in-person consultations,
+        diagnostics and specialized medical care.
+    </p>
+
+    <iframe
+        src="https://www.google.com/maps?q=Chennai,Tamil%20Nadu&output=embed"
+        width="100%"
+        height="300"
+        style="border:0;"
+        allowfullscreen=""
+        loading="lazy">
+    </iframe>
+
+</div>
+
+<div id="appointmentForm" class="box">
+
+    <h2>Book an Appointment</h2>
+
+    <p id="selectedDoctor"></p>
+    <p id="selectedMode"></p>
+
+    <form onsubmit="confirmAppointment(event)">
+
+        <h3>Your Health Details</h3>
+
+        <label>Name:</label><br>
+        <input type="text" id="patientName" required><br>
+
+        <label>Age:</label><br>
+        <input type="number" id="age" min="1" max="120" required><br>
+
+        <label>Gender:</label><br>
+
+        <select id="gender" required>
+            <option value="">Select Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+        </select><br>
+
+        <label>Email:</label><br>
+        <input type="email" id="email"><br>
+
+        <label>Phone:</label><br>
+        <input type="tel" id="phone"
+               pattern="[0-9]{10}"
+               maxlength="10"
+               required><br>
+
+        <label>Symptoms:</label><br>
+        <textarea id="symptoms" rows="4"></textarea><br>
+
+        <!-- Calendar -->
+
+        <label>Appointment Date:</label>
+
+        <div id="calendar" class="calendar-box">
+
+            <div class="calendar-header">
+
+                <button type="button" onclick="changeMonth(-1)">‹</button>
+
+                <span id="calendarMonth"></span>
+
+                <button type="button" onclick="changeMonth(1)">›</button>
+
+            </div>
+
+            <div class="calendar-weekdays">
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+                <span>Sun</span>
+            </div>
+
+            <div id="calendarDays" class="calendar-days"></div>
+
+        </div>
+
+        <input type="hidden" id="appDate">
+
+        <p id="selectedDateText">
+            Please select a date.
+        </p>
+
+        <label>Available Time:</label>
+
+        <div id="timeSlots">
+            Select a date first.
+        </div>
+
+        <input type="hidden" id="appTime">
+
+        <br>
+
+        <button type="submit">
+            Confirm Appointment
+        </button>
+
+    </form>
+
+    <br>
+
+    <button onclick="backToDoctors()">
+        Back to Doctors
+    </button>
+
+    <p id="confirmation"></p>
+
+</div>
+
+<div id="queueResult" class="box">
+
+    <h2>Appointment Confirmed! 🎉</h2>
+
+    <p>
+        <b>Doctor:</b>
+        <span id="queueDoctor"></span>
+    </p>
+
+    <p>
+        <b>Date:</b>
+        <span id="queueDate"></span>
+    </p>
+
+    <p>
+        <b>Time:</b>
+        <span id="queueTime"></span>
+    </p>
+
+    <h3>Your Queue Position</h3>
+
+    <div id="queuePosition">#4</div>
+
+    <p>
+        <b>Patients Ahead:</b>
+        <span id="patientsAhead">3</span>
+    </p>
+
+    <p>
+        <b>Estimated Waiting Time:</b>
+        <span id="waitingTime">30 minutes</span>
+    </p>
+
+    <small>* Default queue values for demonstration.</small>
+
+</div>
+
+</div>
+
+
+<footer>
+
+    <p>
+        © 2026 CarePulse | Healthcare & Appointment Booking System
+    </p>
+
+    <p>
+        Chennai | +91 9876543210 | carepulse@gmail.com
+    </p>
+
+</footer>
+
+
+
+<script>
+
+/* ================= BASIC VARIABLES ================= */
+
+var mode = "";
+var doctorName = "";
+var doctorTime = "";
+var doctorDays = [];
+
+var calendarDate = new Date();
+calendarDate.setDate(1);
+
+var selectedDate = "";
+
+document.getElementById("title").style.textShadow =
+    "2px 2px 4px gray";
+
+function showDate(){
+
+    document.getElementById("todayDate").innerHTML =
+        "Appointments available today: " +
+        new Date().toDateString();
+
+}
+
+function changeStyle(){
+
+    document.body.classList.toggle("comfortMode");
+
+}
+
+function imageOver(){
+
+    document.getElementById("imageMsg").innerHTML =
+        "CarePulse provides trusted healthcare services.";
+
+}
+function imageOut(){
+
+    document.getElementById("imageMsg").innerHTML =
+        "Our hospital provides expert consultation and modern healthcare facilities.";
+
+}
+
+function startAnimation(){
+
+    var motto = document.getElementById("motto");
+    var x = window.innerWidth;
+
+    var timer = setInterval(function(){
+
+        x -= 2;
+        motto.style.left = x + "px";
+
+        if(x < -motto.offsetWidth)
+            clearInterval(timer);
+
+    },20);
+
+}
+
+
+function welcome(){
+
+    showDate();
+    startAnimation();
+
+    setTimeout(function(){
+
+        console.log("Welcome to CarePulse");
+
+    },1000);
+
+}
+
+function selectMode(value){
+
+    mode = value;
+
+    document.getElementById("homePage").style.display = "none";
+
+    document.getElementById("departmentSelection").style.display = "block";
+
+    document.getElementById("departmentSelection")
+        .scrollIntoView({behavior:"smooth"});
+
+}
+
+function backToModes(){
+
+    document.getElementById("departmentSelection").style.display = "none";
+
+    document.getElementById("homePage").style.display = "block";
+
+}
+
+var data = {
+
+    "Cardiology":{
+        image:"https://eozxehncj7g.exactdn.com/wp-content/uploads/2025/04/Cardiology-Banner.jpg",
+        text:"Our Cardiology department provides specialized care for heart and cardiovascular conditions.",
+        doctors:[
+            ["Dr. Shyam","Cardiologist","10 AM - 2 PM",[1,3,5]],
+            ["Dr. Arun","Cardiologist","2 PM - 6 PM",[2,4,6]],
+            ["Dr. Meera","Cardiologist","9 AM - 1 PM",[1,2,3,4,5]]
+        ]
+    },
+
+    "Dermatology":{
+        image:"https://cdn.prod.website-files.com/631e26f79f2c5af80112309a/66deb4823aa0e10bda315614_dermatology.webp",
+        text:"Our Dermatology department provides expert care for skin, hair, and related conditions.",
+        doctors:[
+            ["Dr. Shilpa","Dermatologist","11 AM - 6 PM",[1,3,5]],
+            ["Dr. Priya","Dermatologist","9 AM - 1 PM",[2,4,6]],
+            ["Dr. Kavya","Dermatologist","2 PM - 6 PM",[1,2,4,5]]
+        ]
+    },
+
+    "Orthopedics":{
+        image:"https://www.dashospital.com/resources/assets/images/department-img/orthopedics-dept.jpg",
+        text:"Our Orthopedics department provides specialized care for bones, joints, muscles, and sports injuries.",
+        doctors:[
+            ["Dr. Arjun","Orthopedic","2 PM - 6 PM",[1,3,5]],
+            ["Dr. Rahul","Orthopedic","10 AM - 3 PM",[2,4,6]],
+            ["Dr. Kiran","Orthopedic","9 AM - 1 PM",[1,2,3,4,5]]
+        ]
+    },
+
+    "Pediatrics":{
+        image:"https://www.satnamhospital.com/images/doctor-doing-their-work-pediatrics-office.jpg",
+        text:"Our Pediatrics department provides caring medical services for infants, children, and adolescents.",
+        doctors:[
+            ["Dr. Ram","Pediatrician","9 AM - 1 PM",[1,3,5]],
+            ["Dr. Meena","Pediatrician","2 PM - 6 PM",[2,4,6]],
+            ["Dr. Divya","Pediatrician","10 AM - 3 PM",[1,2,3,4,5]]
+        ]
+    },
+
+    "General Medicine":{
+        image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDaH6VmwP4sv11ooBUDw_P3VBy2b7A34ZR5Cfr4r7k5A8EFmEPEyKNlOM&s=10",
+        text:"Our General Medicine department provides comprehensive care for common illnesses and preventive healthcare.",
+        doctors:[
+            ["Dr. Anitha","General Physician","9 AM - 1 PM",[1,3,5]],
+            ["Dr. Suresh","General Physician","2 PM - 6 PM",[2,4,6]],
+            ["Dr. Nisha","General Physician","10 AM - 3 PM",[1,2,3,4,5]]
+        ]
+    }
+
+};
+
+function showDepartment(dept){
+
+    var d = data[dept];
+
+    document.getElementById("departmentSelection").style.display = "none";
+
+    document.getElementById("departmentDetails").style.display = "block";
+
+    document.getElementById("deptName").innerHTML =
+        dept + " Department";
+
+    document.getElementById("deptDetails").innerHTML =
+        d.text;
+
+    document.getElementById("departmentImage").innerHTML =
+        "<img src='" + d.image +
+        "' class='department-image'>";
+
+    var html = "";
+
+    d.doctors.forEach(function(doc){
+
+        html +=
+        "<div class='doctor'>" +
+        "<h3>" + doc[0] + "</h3>" +
+        "<p><b>" + doc[1] + "</b></p>" +
+        "<p>Available: " + doc[2] + "</p>" +
+        "<button onclick='bookDoctor(" +
+        JSON.stringify(doc[0]) + "," +
+        JSON.stringify(doc[2]) + "," +
+        JSON.stringify(doc[3]) +
+        ")'>Book Appointment</button>" +
+        "</div>";
+
+    });
+
+    document.getElementById("doctors").innerHTML = html;
+
+    document.getElementById("departmentDetails")
+        .scrollIntoView({behavior:"smooth"});
+
+}
+
+function bookDoctor(name,time,days){
+
+    doctorName = name;
+    doctorTime = time;
+    doctorDays = days;
+
+    document.getElementById("departmentDetails").style.display = "none";
+
+    document.getElementById("appointmentForm").style.display = "block";
+
+    document.getElementById("selectedDoctor").innerHTML =
+        "<b>Selected Doctor:</b> " + name;
+
+    document.getElementById("selectedMode").innerHTML =
+        "<b>Consultation Mode:</b> " + mode;
+
+    calendarDate = new Date();
+    calendarDate.setDate(1);
+
+    renderCalendar();
+
+    document.getElementById("appointmentForm")
+        .scrollIntoView({behavior:"smooth"});
+}
+
+function renderCalendar(){
+
+    var box = document.getElementById("calendarDays");
+    box.innerHTML = "";
+
+    var year = calendarDate.getFullYear();
+    var month = calendarDate.getMonth();
+
+    document.getElementById("calendarMonth").innerHTML =
+        calendarDate.toLocaleString("default",{
+            month:"long",
+            year:"numeric"
+        });
+
+    var first =
+        (new Date(year,month,1).getDay()+6)%7;
+
+    for(var i=0;i<first;i++){
+
+        var empty = document.createElement("button");
+
+        empty.className = "calendar-day empty";
+        empty.disabled = true;
+
+        box.appendChild(empty);
+    }
+    var total =
+        new Date(year,month+1,0).getDate();
+    for(var day=1;day<=total;day++){
+
+        var date =
+            new Date(year,month,day);
+
+        var dateKey =
+            year + "-" +
+            String(month+1).padStart(2,"0") + "-" +
+            String(day).padStart(2,"0");
+
+        var button =
+            document.createElement("button");
+
+        button.type = "button";
+
+        button.className =
+            "calendar-day available";
+
+        button.innerHTML = day;
+
+        button.dataset.date =
+            dateKey;
+
+        button.onclick = function(){
+
+            selectDate(this.dataset.date);
+
+        };
+        box.appendChild(button);
+    }
+}
+
+function selectDate(date){
+
+    selectedDate = date;
+
+    document.getElementById("appDate").value = date;
+
+    document.getElementById("selectedDateText").innerHTML =
+        "Selected Date: " + date;
+
+    loadTimeSlots();
+
+}
+
+function changeMonth(n){
+
+    calendarDate.setMonth(
+        calendarDate.getMonth()+n
+    );
+    renderCalendar();
+
+}
+
+function loadTimeSlots(){
+
+    var box = document.getElementById("timeSlots");
+
+    box.innerHTML = "";
+
+    var p = doctorTime.split("-");
+
+    var start = convertToMinutes(p[0].trim());
+    var end = convertToMinutes(p[1].trim());
+
+    for(var t=start;t<end;t+=30){
+
+        var h = Math.floor(t/60);
+        var m = t%60;
+
+        var ap = h>=12 ? "PM" : "AM";
+
+        var display =
+            (h%12 || 12) + ":" +
+            String(m).padStart(2,"0") +
+            " " + ap;
+
+        var b = document.createElement("button");
+
+        b.type = "button";
+        b.className = "time-slot";
+        b.innerHTML = display;
+
+        b.onclick = function(){
+
+            document.querySelectorAll(".time-slot")
+                .forEach(function(x){
+                    x.classList.remove("selected");
+                });
+
+            this.classList.add("selected");
+
+            document.getElementById("appTime").value =
+                this.innerHTML;
+
+        };
+
+        box.appendChild(b);
+
+    }
+
+}
+
+function convertToMinutes(time){
+
+    var p = time.split(" ");
+    var c = p[0].split(":");
+
+    var h = parseInt(c[0]);
+    var m = parseInt(c[1] || 0);
+
+    if(p[1].toUpperCase()=="PM" && h!=12)
+        h += 12;
+
+    if(p[1].toUpperCase()=="AM" && h==12)
+        h = 0;
+
+    return h*60+m;
+
+}
+
+
+function confirmAppointment(event){
+
+    event.preventDefault();
+
+    var date =
+        document.getElementById("appDate").value;
+
+    var time =
+        document.getElementById("appTime").value;
+
+    if(!date || !time){
+
+        alert("Please select a date and time.");
+
+        return;
+
+    }
+    document.getElementById("confirmation").innerHTML =
+        "Appointment booked successfully!";
+
+    setTimeout(function(){
+
+        document.getElementById("queueResult").style.display =
+            "block";
+
+        document.getElementById("queueDoctor").innerHTML =
+            doctorName;
+
+        document.getElementById("queueDate").innerHTML =
+            date;
+
+        document.getElementById("queueTime").innerHTML =
+            time;
+
+        /* Default queue values */
+
+        document.getElementById("queuePosition").innerHTML =
+            "#4";
+
+        document.getElementById("patientsAhead").innerHTML =
+            "3";
+
+        document.getElementById("waitingTime").innerHTML =
+            "30 minutes";
+
+        document.getElementById("queueResult")
+            .scrollIntoView({behavior:"smooth"});
+
+    },1000);
+
+}
+function backToDepartments(){
+
+    document.getElementById("departmentDetails").style.display =
+        "none";
+    document.getElementById("departmentSelection").style.display =
+        "block";
+
+}
+
+function backToDoctors(){
+    document.getElementById("appointmentForm").style.display =
+        "none";
+    document.getElementById("departmentDetails").style.display =
+        "block";
+
+}
+
+/* jQuery actions: search doctors and animate doctor cards */
+$(document).ready(function(){
+    $("#doctorSearch").on("input", function(){
+        var searchText = $(this).val().toLowerCase();
+
+        $("#doctors .doctor").each(function(){
+            var doctorDetails = $(this).text().toLowerCase();
+            $(this).toggle(doctorDetails.indexOf(searchText) !== -1);
+        });
+    });
+});
+</script>
+
+</body>
+</html>
